@@ -2,12 +2,10 @@ pipeline {
     agent any
 
     environment {
-
         APP_BINARY = 'hello-world'                   // Nama binary hasil build
         REMOTE_USER = 'service'                      // User server target
         REMOTE_HOST = '157.10.160.194'               // IP server target
-        TARGET_DIR = '/var/www/myapp'               // Direktori target di server
-
+        TARGET_DIR = '/var/www/myapp'                // Direktori target di server
     }
 
     stages {
@@ -18,45 +16,45 @@ pipeline {
             }
         }
 
-stage('Build') {
-    steps {
-        echo "Building Go application..."
-        sh '''
-        go build -o hello-world main.go
-        '''
-    }
-}
+        stage('Build') {
+            steps {
+                echo "Building Go application..."
+                sh '''
+                go build -o ${APP_BINARY} main.go
+                '''
+            }
+        }
 
         stage('Run') {
-    steps {
-        echo "Running the Go application..."
-        sh '''
-        chmod +x hello-world
-        ./hello-world
-        '''
-    }
-}
-    }
+            steps {
+                echo "Running the Go application locally..."
+                sh '''
+                chmod +x ${APP_BINARY}
+                ./${APP_BINARY}
+                '''
+            }
+        }
 
- stage('Deploy to Server') {
+        stage('Deploy to Server') {
             steps {
                 sshagent(['server-ssh-credentials']) { // ID credentials SSH di Jenkins
                     sh '''
+                    echo "Creating target directory if not exists..."
+                    ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${TARGET_DIR}"
+
                     echo "Copying binary to remote server..."
                     scp ${APP_BINARY} ${REMOTE_USER}@${REMOTE_HOST}:${TARGET_DIR}/
 
                     echo "Running binary on remote server..."
-                    ssh ${REMOTE_USER}@${REMOTE_HOST} '
+                    ssh ${REMOTE_USER}@${REMOTE_HOST} "
                     chmod +x ${TARGET_DIR}/${APP_BINARY}
                     ${TARGET_DIR}/${APP_BINARY}
-                    '
+                    "
                     '''
                 }
             }
         }
     }
-
-
 
     post {
         success {
@@ -66,3 +64,4 @@ stage('Build') {
             echo "Pipeline failed!"
         }
     }
+}
