@@ -40,10 +40,10 @@ pipeline {
         sshagent(['5db0495e-c861-47b7-8bb4-f2c1b451c676']) { // ID credentials SSH di Jenkins
             sh '''
             echo "Creating target directory if not exists..."
-            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${TARGET_DIR}"
+            ssh -o StrictHostKeyChecking=no service@157.10.160.194 "mkdir -p /var/www/myapp"
 
             echo "Copying binary to remote server..."
-            scp -o StrictHostKeyChecking=no ${APP_BINARY} ${REMOTE_USER}@${REMOTE_HOST}:${TARGET_DIR}/
+            scp -o StrictHostKeyChecking=no hello-world service@157.10.160.194:/var/www/myapp/
 
             echo "Running binary on remote server..."
             ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
