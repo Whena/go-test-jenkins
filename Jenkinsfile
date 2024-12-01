@@ -66,4 +66,3 @@ stage('Build') {
             echo "Pipeline failed!"
         }
     }
-}
