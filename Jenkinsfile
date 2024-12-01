@@ -2,7 +2,12 @@ pipeline {
     agent any
 
     environment {
-        GO_BINARY = 'hello-world' // Nama binary hasil build
+
+        APP_BINARY = 'hello-world'                   // Nama binary hasil build
+        REMOTE_USER = 'service'                      // User server target
+        REMOTE_HOST = '157.10.160.194'               // IP server target
+        TARGET_DIR = '/var/www/myapp'               // Direktori target di server
+
     }
 
     stages {
