@@ -18,35 +18,24 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                echo "Building Go application..."
-                sh '''
-                go mod init example.com/hello || true
-                go build -o ${GO_BINARY} main.go
-                '''
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo "Running tests (placeholder)..."
-                sh '''
-                # Jika ada test: go test ./...
-                echo "No tests implemented."
-                '''
-            }
-        }
+stage('Build') {
+    steps {
+        echo "Building Go application..."
+        sh '''
+        go build -o hello-world main.go
+        '''
+    }
+}
 
         stage('Run') {
-            steps {
-                echo "Running the Go application..."
-                sh '''
-                chmod +x ${GO_BINARY}
-                ./${GO_BINARY}
-                '''
-            }
-        }
+    steps {
+        echo "Running the Go application..."
+        sh '''
+        chmod +x hello-world
+        ./hello-world
+        '''
+    }
+}
     }
 
     post {
