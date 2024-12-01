@@ -38,6 +38,26 @@ stage('Build') {
 }
     }
 
+ stage('Deploy to Server') {
+            steps {
+                sshagent(['server-ssh-credentials']) { // ID credentials SSH di Jenkins
+                    sh '''
+                    echo "Copying binary to remote server..."
+                    scp ${APP_BINARY} ${REMOTE_USER}@${REMOTE_HOST}:${TARGET_DIR}/
+
+                    echo "Running binary on remote server..."
+                    ssh ${REMOTE_USER}@${REMOTE_HOST} '
+                    chmod +x ${TARGET_DIR}/${APP_BINARY}
+                    ${TARGET_DIR}/${APP_BINARY}
+                    '
+                    '''
+                }
+            }
+        }
+    }
+
+
+
     post {
         success {
             echo "Pipeline executed successfully!"
