@@ -36,25 +36,24 @@ pipeline {
         }
 
         stage('Deploy to Server') {
-            steps {
-                sshagent(['5db0495e-c861-47b7-8bb4-f2c1b451c676']) { // ID credentials SSH di Jenkins
-                    sh '''
-                    echo "Creating target directory if not exists..."
-                    ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${TARGET_DIR}"
+    steps {
+        sshagent(['5db0495e-c861-47b7-8bb4-f2c1b451c676']) { // ID credentials SSH di Jenkins
+            sh '''
+            echo "Creating target directory if not exists..."
+            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${TARGET_DIR}"
 
-                    echo "Copying binary to remote server..."
-                    scp ${APP_BINARY} ${REMOTE_USER}@${REMOTE_HOST}:${TARGET_DIR}/
+            echo "Copying binary to remote server..."
+            scp -o StrictHostKeyChecking=no ${APP_BINARY} ${REMOTE_USER}@${REMOTE_HOST}:${TARGET_DIR}/
 
-                    echo "Running binary on remote server..."
-                    ssh ${REMOTE_USER}@${REMOTE_HOST} "
-                    chmod +x ${TARGET_DIR}/${APP_BINARY}
-                    ${TARGET_DIR}/${APP_BINARY}
-                    "
-                    '''
-                }
-            }
+            echo "Running binary on remote server..."
+            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
+            chmod +x ${TARGET_DIR}/${APP_BINARY}
+            ${TARGET_DIR}/${APP_BINARY}
+            "
+            '''
         }
     }
+}
 
     post {
         success {
