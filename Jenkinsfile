@@ -37,7 +37,7 @@ pipeline {
 
         stage('Deploy to Server') {
             steps {
-                sshagent(['server-ssh-credentials']) { // ID credentials SSH di Jenkins
+                sshagent(['5db0495e-c861-47b7-8bb4-f2c1b451c676']) { // ID credentials SSH di Jenkins
                     sh '''
                     echo "Creating target directory if not exists..."
                     ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${TARGET_DIR}"
